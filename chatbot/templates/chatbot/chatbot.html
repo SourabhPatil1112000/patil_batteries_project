@@ -1,0 +1,59 @@
+{% extends 'chatbot/base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h2>Patil Batteries AI Assistant</h2>
+        
+        <div class="chat-container" id="chatContainer">
+            {% if bot_response %}
+                <div class="user-message">
+                    <strong>You:</strong> {{ user_input }}
+                </div>
+                <div class="bot-message">
+                    <strong>Assistant:</strong> {{ bot_response|linebreaks }}
+                </div>
+            {% else %}
+                <div class="bot-message">
+                    <strong>Assistant:</strong> Hello! How can I help you with batteries today?
+                </div>
+            {% endif %}
+        </div>
+        
+        <form method="post" class="mt-3">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" class="form-control" name="user_input" 
+                       placeholder="Ask about our batteries..." required>
+                <button class="btn btn-primary" type="submit">Send</button>
+            </div>
+        </form>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Our Products</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {% for product in products %}
+                    <li class="list-group-item">
+                        <strong>{{ product.name }}</strong><br>
+                        {{ product.get_battery_type_display }} - {{ product.capacity }}, {{ product.voltage }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Auto-scroll to bottom of chat
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatContainer = document.getElementById('chatContainer');
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    });
+</script>
+{% endblock %}
